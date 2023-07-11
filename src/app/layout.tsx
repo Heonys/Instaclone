@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <header className="sticky top-0 bg-white z-10 border-b">
             <Navigation />
           </header>
-          <main>{children}</main>
+          <main className="bg-neutral-50">{children}</main>
         </AuthContext>
       </body>
     </html>

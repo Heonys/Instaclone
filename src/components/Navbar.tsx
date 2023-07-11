@@ -48,7 +48,7 @@ const Navigation = () => {
           {user && (
             <li>
               <Link href={`/user/${user.name}`}>
-                <Avatar image={user.image} />
+                <Avatar size="sm" highlight image={user.image} />
               </Link>
             </li>
           )}
