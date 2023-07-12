@@ -16,7 +16,7 @@ const Avatar = ({ image, highlight = false, size = "md" }: Props) => {
   });
 
   const imageSizeStyle = classNames({
-    "rounded-full bg-white ": true,
+    "rounded-full bg-white object-cover ": true,
     "w-[34px] h-[34px] p-[0.1rem] ": size === "sm",
     "w-16 h-16 p-[0.2rem] ": size === "md",
   });
