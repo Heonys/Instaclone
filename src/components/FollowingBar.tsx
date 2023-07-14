@@ -11,7 +11,7 @@ const FollowingBar = () => {
   const users = data?.following;
 
   return (
-    <section className="flex justify-center w-full items-center p-4 shadow-sm shadow-neutral-300 mb-4 rounded-lg min-h-[100px] overflow-x-scroll">
+    <section className="flex justify-center w-full items-center p-4 shadow-sm shadow-neutral-300 mb-4 rounded-lg min-h-[100px] overflow-x-scroll relative z-0">
       {isLoading ? (
         <PropagateLoader size={8} color="red" />
       ) : (

@@ -1,46 +1,45 @@
-import { SimpePost } from "@/model/posts";
-import Avatar from "./Avatar";
+"use client";
+import { SimplePost } from "@/model/posts";
 import Image from "next/image";
-import { HeartIcon, BookMarkIcon, SmileIcon } from "@/components/ui/icons";
-import { parseDate } from "@/util/date";
+import CommentForm from "./CommentForm";
+import ActionBar from "./ActionBar";
+import { useState } from "react";
+import ModalPortal from "./ModalPortal";
+import PostModal from "./PostModal";
+import PostDetail from "./PostDetail";
+import PostUserAvatar from "./PostUserAvatar";
 
 type Props = {
-  post: SimpePost;
+  post: SimplePost;
+  priority?: boolean;
 };
 
-const PostListCard = ({ post }: Props) => {
+const PostListCard = ({ post, priority = false }: Props) => {
   const { username, userImage, likes, image, text, createdAt, commnets } = post;
+
+  const [openModal, setOpenModal] = useState(false);
+
   return (
-    <article className="rounded-lg shadow-md border border-gray-200">
-      <div className="flex items-center p-2">
-        <Avatar image={userImage} size="md" highlight />
-        <span className="font-bold text-gray-900 ml-2">{username}</span>
-      </div>
+    <article className="rounded-lg shadow-md border border-gray-200 relative">
+      <PostUserAvatar username={username} image={userImage} />
       <Image
         className="w-full object-cover aspect-square"
+        onClick={() => setOpenModal(true)}
         src={image}
         width={500}
         height={500}
         alt={`${username}'s image`}
+        priority={priority}
       />
-      <div className="flex justify-between my-2 p-4">
-        <HeartIcon />
-        <BookMarkIcon />
-      </div>
-      <div className="px-4 py-1">
-        <p className="text-sm font-bold mb-2">{`${likes?.length ?? 0} ${likes?.length > 1 ? "likes" : "like"}`}</p>
-        <p>
-          <span className="font-bold mr-1">{username}</span>
-          {text}
-        </p>
-        <p className="text-xs text-neutral-500 uppercase my-2">{parseDate(createdAt)}</p>
-      </div>
-
-      <form className="flex items-center border-t border-neutral-300 px-4">
-        <SmileIcon />
-        <input className="w-full border-none ml-2 p-3 outline-none" type="text" placeholder="Add a comment ... " />
-        <button className="font-bold text-sky-500 ml-2">Post</button>
-      </form>
+      <ActionBar username={username} text={text} createdAt={createdAt} likes={likes} />
+      <CommentForm />
+      {openModal && (
+        <ModalPortal>
+          <PostModal onClose={() => setOpenModal(false)}>
+            <PostDetail post={post} />
+          </PostModal>
+        </ModalPortal>
+      )}
     </article>
   );
 };

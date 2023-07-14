@@ -15,6 +15,6 @@ export type FullPost = {
   comments: Comment[];
 };
 
-export type SimpePost = Omit<FullPost, "comments"> & {
+export type SimplePost = Omit<FullPost, "comments"> & {
   commnets: number;
 };

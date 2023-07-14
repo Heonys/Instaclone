@@ -1,28 +1,26 @@
 "use client";
 import { SimpePost } from "@/model/posts";
 import React from "react";
-import { GridLoader } from "react-spinners";
 import useSWR from "swr";
 import PostListCard from "./PostListCard";
+import GridSpinner from "./ui/GridSpinner";
 
 const PostList = () => {
-  const { data: posts, isLoading, error } = useSWR<SimpePost[]>("/api/posts");
-
-  console.log(posts);
+  const { data: posts, isLoading } = useSWR<SimpePost[]>("/api/posts");
 
   return (
     <section>
       {isLoading && (
         <div className="text-center mt-32">
-          <GridLoader color="red" />
+          <GridSpinner color="red" />
         </div>
       )}
       <ul className="flex flex-col gap-4">
         {posts &&
-          posts.map((post) => {
+          posts.map((post, index) => {
             return (
               <li key={post.id}>
-                <PostListCard post={post} />
+                <PostListCard post={post} priority={index < 2} />
               </li>
             );
           })}
