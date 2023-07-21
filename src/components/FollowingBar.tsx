@@ -1,5 +1,5 @@
 "use client";
-import { DetailUser } from "@/model/user";
+import { HomelUser } from "@/model/user";
 import Link from "next/link";
 import { PropagateLoader } from "react-spinners";
 import useSWR from "swr";
@@ -7,7 +7,7 @@ import Avatar from "./Avatar";
 import Multicarousel from "./Multicarousel";
 
 const FollowingBar = () => {
-  const { data, isLoading, error } = useSWR<DetailUser>("/api/me");
+  const { data, isLoading, error } = useSWR<HomelUser>("/api/me");
   const users = data?.following;
 
   return (
@@ -21,9 +21,15 @@ const FollowingBar = () => {
         <Multicarousel>
           {users.map(({ username, image }) => {
             return (
-              <Link key={username} href={`/user/${username}`} className="flex flex-col items-center w-20">
+              <Link
+                key={username}
+                href={`/user/${username}`}
+                className="flex flex-col items-center w-20"
+              >
                 <Avatar image={image} highlight />
-                <p className="text-sm text-center text-ellipsis overflow-hidden w-full">{username}</p>
+                <p className="text-sm text-center text-ellipsis overflow-hidden w-full">
+                  {username}
+                </p>
               </Link>
             );
           })}

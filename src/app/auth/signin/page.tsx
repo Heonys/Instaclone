@@ -3,6 +3,12 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { getProviders } from "next-auth/react";
 import Signin from "@/components/Signin";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Sign in",
+  description: "Signup or Login to Instaclone",
+};
 
 type Props = {
   searchParams: {

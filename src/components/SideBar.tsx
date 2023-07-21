@@ -1,8 +1,8 @@
 import Avatar from "./Avatar";
-import type { User } from "@/model/user";
+import type { AuthUser } from "@/model/user";
 
 type Props = {
-  user: User;
+  user: AuthUser;
 };
 
 const SideBar = ({ user: { name, email, username, image } }: Props) => {

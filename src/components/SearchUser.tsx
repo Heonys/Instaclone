@@ -4,10 +4,12 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import useSWR from "swr";
 import GridSpinner from "./ui/GridSpinner";
 import UserCard from "./UserCard";
+import useDebounce from "@/hooks/useDebounce";
 
 const SearchPage = () => {
   const [keyword, setKeyword] = useState("");
-  const { data: users, isLoading, error } = useSWR<ProfileUser[]>(`/api/search/${keyword}`);
+  const debounceKeyword = useDebounce(keyword, 500);
+  const { data: users, isLoading, error } = useSWR<ProfileUser[]>(`/api/search/${debounceKeyword}`);
 
   const onSubmit = (evnet: FormEvent<HTMLFormElement>) => {
     evnet?.preventDefault();
@@ -16,6 +18,7 @@ const SearchPage = () => {
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     setKeyword(event.target.value);
   };
+
   return (
     <section className="w-full max-w-2xl my-4 flex flex-col items-center">
       <form className="w-full mb-4" onSubmit={onSubmit}>
