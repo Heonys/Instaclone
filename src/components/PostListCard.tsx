@@ -31,7 +31,7 @@ const PostListCard = ({ post, priority = false }: Props) => {
         alt={`${username}'s image`}
         priority={priority}
       />
-      <ActionBar username={username} text={text} createdAt={createdAt} likes={likes} />
+      <ActionBar post={post} />
       <CommentForm />
       {openModal && (
         <ModalPortal>
