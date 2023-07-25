@@ -59,9 +59,8 @@ export async function getPostOf(username: string) {
 export async function getLikedOf(username: string) {
   return client
     .fetch(
-      `*[_type == "post" && ${username} in likes[]->username ]
-    | order(_createAt desc){
-      ...,
+      `*[_type == "post" && "${username}" in likes[]->username ]
+    | order(_createdAt desc){
       ${postProjection}
   }`
     )
@@ -89,21 +88,37 @@ function mapPosts(posts: SimplePost[]) {
 }
 
 export async function likePost(postId: string, userId: string) {
-  return client
-    .patch(postId)
-    .setIfMissing({ likes: [] })
+  return client // 디비에서
+    .patch(postId) // 해당 id로 식별되는 문서를 업데이트 할건데
+    .setIfMissing({ likes: [] }) // 만약 해당  likes라는 필드가 없다면 초기화
     .append("likes", [
+      // likes 배열에 새로운 요소를 추가할건데
       {
-        _ref: userId,
-        _type: "reference",
+        _ref: userId, // id가 userid인 user를 추가
+        _type: "reference", // likes는 reference 타입의 배열이기 때문
       },
     ])
-    .commit({ autoGenerateArrayKeys: true });
+    .commit({ autoGenerateArrayKeys: true }); // 배열의 키를 자동으로 생성
 }
 
 export async function dislikePost(postId: string, userId: string) {
   return client
     .patch(postId)
     .unset([`likes[_ref == "${userId}"]`])
+    .commit({ autoGenerateArrayKeys: true });
+}
+
+export async function addComment(postId: string, userId: string, comment: string) {
+  console.log("api route ::", postId, userId, comment);
+
+  return client
+    .patch(postId)
+    .setIfMissing({ comments: [] })
+    .append("comments", [
+      {
+        comment,
+        author: { _ref: userId, _type: "reference" },
+      },
+    ])
     .commit({ autoGenerateArrayKeys: true });
 }

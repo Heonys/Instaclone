@@ -1,28 +1,29 @@
 "use client";
 import { HeartIcon, BookMarkIcon, HeartFillIcon, BookMarkFillIcon } from "@/components/ui/icons";
 import { parseDate } from "@/util/date";
-import { useState } from "react";
 import ToggleButton from "./ui/ToggleButton";
 import { SimplePost } from "@/model/posts";
-import { useSession } from "next-auth/react";
 import usePosts from "@/hooks/usePosts";
+import useMe from "@/hooks/useMe";
 
 type Props = {
   post: SimplePost;
+  children?: React.ReactNode;
 };
 
-const ActionBar = ({ post }: Props) => {
+const ActionBar = ({ post, children }: Props) => {
   const { id, likes, text, username, createdAt } = post;
-  const { data: session } = useSession();
-  const user = session?.user;
-  const liked = user ? likes.includes(user.username) : false;
-  const [bookmarked, setBookmarked] = useState(false);
+  const { user, setBookmark } = useMe();
   const { setLike } = usePosts();
 
+  const liked = user ? likes.includes(user.username) : false;
+  const bookmarked = user?.bookmarks.includes(id) ?? false;
+
   const handleLike = (like: boolean) => {
-    if (user) {
-      setLike(post, user.username, like);
-    }
+    user && setLike(post, user.username, like);
+  };
+  const handleBookmark = (bookmark: boolean) => {
+    user && setBookmark(id, bookmark);
   };
   return (
     <>
@@ -35,7 +36,7 @@ const ActionBar = ({ post }: Props) => {
         />
         <ToggleButton
           toggled={bookmarked}
-          onToggle={setBookmarked}
+          onToggle={handleBookmark}
           onIcon={<BookMarkFillIcon />}
           ofIcon={<BookMarkIcon />}
         />
@@ -44,12 +45,7 @@ const ActionBar = ({ post }: Props) => {
         <p className="text-sm font-bold mb-2">{`${likes?.length ?? 0} ${
           likes?.length > 1 ? "likes" : "like"
         }`}</p>
-        {text && (
-          <p>
-            <span className="font-bold mr-1">{username}</span>
-            {text}
-          </p>
-        )}
+        {children}
         <p className="text-xs text-neutral-500 uppercase my-2">{parseDate(createdAt)}</p>
       </div>
     </>

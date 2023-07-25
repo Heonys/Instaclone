@@ -19,7 +19,7 @@ export async function GET(req: NextRequest, context: Context) {
   let request = getPostOf;
   if (query === "liked") {
     request = getLikedOf;
-  } else if (query === "bookmarks") {
+  } else if (query === "saved") {
     request = getSaveddOf;
   }
   return request(username).then((res) => NextResponse.json(res));

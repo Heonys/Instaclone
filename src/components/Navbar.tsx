@@ -2,7 +2,14 @@
 import Link from "next/link";
 import React from "react";
 import { usePathname } from "next/navigation";
-import { HomeFillIcon, HomeIcon, NewFillIcon, NewIcon, SearchFillIcon, SearchIcon } from "@/components/ui/icons";
+import {
+  HomeFillIcon,
+  HomeIcon,
+  NewFillIcon,
+  NewIcon,
+  SearchFillIcon,
+  SearchIcon,
+} from "@/components/ui/icons";
 import ColorButton from "./ui/ColorButton";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Avatar from "./Avatar";
@@ -47,7 +54,7 @@ const Navigation = () => {
           })}
           {user && (
             <li>
-              <Link href={`/user/${user.name}`}>
+              <Link href={`/user/${user.username}`}>
                 <Avatar size="sm" highlight image={user.image} />
               </Link>
             </li>

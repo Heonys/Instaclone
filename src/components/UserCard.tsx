@@ -6,7 +6,7 @@ type Props = {
   user: SearchUser;
 };
 
-const UserCard = ({ user: { name, email, username, image, follwoer, following } }: Props) => {
+const UserCard = ({ user: { name, email, username, image, followers, following } }: Props) => {
   return (
     <Link
       href={`/user/${username}`}
@@ -16,7 +16,7 @@ const UserCard = ({ user: { name, email, username, image, follwoer, following } 
       <div className="text-neutral-500">
         <p className="font-bold text-black leading-4">{username}</p>
         <p>{name}</p>
-        <p className="textsm leading-4">{`${follwoer} followers ${following} following`}</p>
+        <p className="textsm leading-4">{`${followers} followers ${following} following`}</p>
       </div>
     </Link>
   );

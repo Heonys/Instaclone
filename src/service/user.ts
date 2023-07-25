@@ -8,7 +8,7 @@ type OauthUser = {
   image: string | null;
   username: string;
 };
-
+// followers
 export async function addUser({ id, username, name, email, image }: OauthUser) {
   client.createIfNotExists({
     _id: id,
@@ -18,7 +18,7 @@ export async function addUser({ id, username, name, email, image }: OauthUser) {
     email,
     image,
     following: [],
-    follwoer: [],
+    followers: [],
     bookmarks: [],
   });
 }
@@ -28,7 +28,7 @@ export async function getUserByUsername(username: string) {
     ...,
     "id": _id,
     following[]->{username, image},
-    follwoer[]->{username, image},
+    followers[]->{username, image},
     "bookmarks": bookmarks[]->_id
   }`);
 }
@@ -41,14 +41,14 @@ export async function searchUsers(keyword?: string) {
       `*[_type == "user" ${query} ]{
     ...,
     "following": count(following),
-    "follwoer": count(follwoer),
+    "followers": count(followers),
   }`
     )
     .then((users) =>
       users.map((user: SearchUser) => ({
         ...user,
-        follwoer: user.follwoer ?? 0,
         following: user.following ?? 0,
+        followers: user.followers ?? 0,
       }))
     );
 }
@@ -60,14 +60,34 @@ export async function getUserForProfile(username: string) {
         ...,
         "id": _id,
         "following": count(following),
-        "follwoer": count(follwoer),
+        "followers": count(followers),
         "posts": count(*[_type == "post" && author->username == "${username}"])
       }`
     )
-    .then<ProfileUser>((user) => ({
+    .then((user) => ({
       ...user,
-      follwoer: user.follwoer ?? 0,
       following: user.following ?? 0,
+      followers: user.followers ?? 0,
       posts: user.posts ?? 0,
     }));
+}
+
+export async function addBookmark(userId: string, postId: string) {
+  return client
+    .patch(userId)
+    .setIfMissing({ bookmarks: [] })
+    .append("bookmarks", [
+      {
+        _ref: postId,
+        _type: "reference",
+      },
+    ])
+    .commit({ autoGenerateArrayKeys: true });
+}
+
+export async function removeBookmark(userId: string, postId: string) {
+  return client
+    .patch(userId)
+    .unset([`bookmarks[_ref == "${postId}"]`])
+    .commit({ autoGenerateArrayKeys: true });
 }
