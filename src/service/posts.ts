@@ -1,5 +1,5 @@
 import { SimplePost } from "@/model/posts";
-import { client, urlFor } from "./sanity";
+import { assetURL, client, urlFor } from "./sanity";
 
 const postProjection = `
 ...,
@@ -18,7 +18,7 @@ export async function getFollowingPostsOf(username: string) {
     .fetch(
       `*[_type == "post" && author->username == "${username}"
     || author._ref in *[_type=="user" && username == "${username}"].following[]._ref] 
-    | order(_createedAt desc){${postProjection}}`
+    | order(_createdAt desc){${postProjection}}`
     )
     .then(mapPosts);
 }
@@ -109,8 +109,6 @@ export async function dislikePost(postId: string, userId: string) {
 }
 
 export async function addComment(postId: string, userId: string, comment: string) {
-  console.log("api route ::", postId, userId, comment);
-
   return client
     .patch(postId)
     .setIfMissing({ comments: [] })
@@ -121,4 +119,33 @@ export async function addComment(postId: string, userId: string, comment: string
       },
     ])
     .commit({ autoGenerateArrayKeys: true });
+}
+
+export async function createPost(userId: string, text: string, file: Blob) {
+  return fetch(assetURL, {
+    method: "POST",
+    headers: {
+      "Content-Type": file.type,
+      authorization: `Bearer ${process.env.SANITY_SECRET_TOKEN}`,
+    },
+    body: file,
+  })
+    .then((res) => res.json())
+    .then((result) => {
+      return client.create(
+        {
+          _type: "post",
+          author: { _ref: userId },
+          photo: { asset: { _ref: result.document._id } },
+          comments: [
+            {
+              comment: text,
+              author: { _ref: userId, _type: "reference" },
+            },
+          ],
+          likes: [],
+        },
+        { autoGenerateArrayKeys: true }
+      );
+    });
 }

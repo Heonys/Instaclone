@@ -1,4 +1,3 @@
-import { SimplePost } from "@/model/posts";
 import Avatar from "./Avatar";
 
 type Props = {
