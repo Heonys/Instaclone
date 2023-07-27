@@ -29,12 +29,14 @@ const ActionBar = ({ post, children }: Props) => {
     <>
       <div className="flex justify-between my-2 p-4">
         <ToggleButton
+          title={liked ? "unlike" : "like"}
           toggled={liked}
           onToggle={handleLike}
           onIcon={<HeartFillIcon />}
           ofIcon={<HeartIcon />}
         />
         <ToggleButton
+          title={liked ? "unbookmark" : "bookmark"}
           toggled={bookmarked}
           onToggle={handleBookmark}
           onIcon={<BookMarkFillIcon />}

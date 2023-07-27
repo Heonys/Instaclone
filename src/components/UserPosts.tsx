@@ -30,7 +30,9 @@ export default function UserPosts({ user: { username } }: Props) {
                 type === query && "font-bold border-t"
               }  `}
             >
-              <button className="scale-150 md:scale-100">{icon}</button>
+              <button className="scale-150 md:scale-100" aria-label={type}>
+                {icon}
+              </button>
               <span className="hidden md:inline">{type}</span>
             </li>
           );

@@ -19,16 +19,19 @@ const navMenu = [
     href: "/",
     icon: <HomeIcon />,
     clikedIcon: <HomeFillIcon />,
+    title: "Home",
   },
   {
     href: "/search",
     icon: <SearchIcon />,
     clikedIcon: <SearchFillIcon />,
+    title: "search",
   },
   {
     href: "/new",
     icon: <NewIcon />,
     clikedIcon: <NewFillIcon />,
+    title: "new post",
   },
 ];
 
@@ -40,21 +43,23 @@ const Navigation = () => {
 
   return (
     <section className="flex justify-between items-center px-6">
-      <Link href="/">
+      <Link href="/" aria-label="home">
         <h1 className="font-bold text-3xl">Instagram</h1>
       </Link>
       <nav>
         <ul className="flex items-center gap-4 p-4">
-          {navMenu.map(({ href, icon, clikedIcon }) => {
+          {navMenu.map(({ href, icon, clikedIcon, title }) => {
             return (
               <li key={href}>
-                <Link href={href}>{pathname === href ? clikedIcon : icon}</Link>
+                <Link aria-label={title} href={href}>
+                  {pathname === href ? clikedIcon : icon}
+                </Link>
               </li>
             );
           })}
           {user && (
             <li>
-              <Link href={`/user/${user.username}`}>
+              <Link href={`/user/${user.username}`} aria-label="logged user">
                 <Avatar size="sm" highlight image={user.image} />
               </Link>
             </li>
